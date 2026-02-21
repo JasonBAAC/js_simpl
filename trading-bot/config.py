@@ -45,10 +45,11 @@ if __name__ == "__main__":
         client = get_bithumb_client()
         print("API client created successfully.")
         
-        ticker = client.fetch_ticker('BTC/KRW')
+        asset = "XRP"
+        ticker = client.fetch_ticker(f'{asset}/KRW')
         current_price = ticker['last']
         
-        print(f"Current BTC/KRW price: {current_price:,.0f} KRW")
+        print(f"Current {asset}/KRW price: {current_price:,.0f} KRW")
         print(f"MOCK Trading Mode: {'Enabled' if IS_MOCK_TRADING else 'Disabled'}")
         print(f"MOCK Balance: {MOCK_BALANCE:,.0f} KRW")
         

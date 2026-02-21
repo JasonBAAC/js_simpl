@@ -12,7 +12,7 @@ __pycache__/
 .Python
 
 # 거래 내역
-trade_journal.csv
+*.csv
 
 # 로그 파일
 *.log
