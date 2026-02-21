@@ -1,0 +1,22 @@
+# created by virtualenv automatically
+
+# 환경 변수 (절대 업로드 금지)
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+
+# 거래 내역
+trade_journal.csv
+
+# 로그 파일
+*.log
+
+# IDE 설정 파일
+.vscode/
+.idea/
