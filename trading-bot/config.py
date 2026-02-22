@@ -1,60 +1,46 @@
-"""
-    Configuration module for the trading bot. This module defines the configuration settings for the bot, including API keys, trading parameters, and other settings that can be customized by the user.
-    
-"""
-
+# config.py
 import os
 from dotenv import load_dotenv
-import ccxt
 
-# Load environment variables from .env file
+# .env 파일 로드
 load_dotenv()
 
-# Mock Trading 설정
-IS_MOCK_TRADING = os.getenv('IS_MOCK_TRADING', 'True').lower() == 'true' not in ("false", "0", "no", "off")
-MOCK_BALANCE = float(os.getenv('MOCK_BALANCE', '200000'))  # Mock balance for testing
-
-def get_bithumb_client():
-    """
-    빗썸 API 클라이언트 생성
+class Config:
+    # ---------------------------------------------------------
+    # 1. 보안 설정 (API Keys & Tokens) - .env에서 가져옴
+    # ---------------------------------------------------------
+    EXCHANGE_ID = os.getenv('EXCHANGE_ID', 'bithumb')  # 기본값은 'bithumb'로 설정
+    QUOTE_CURRENCY = os.getenv('QUOTE_CURRENCY', 'KRW')  # 거래에 사용할 기준 화폐 (예: USDT, KRW)
+    API_KEY = os.getenv('BITHUMB_API_ACCESS_KEY', '')
+    SECRET_KEY = os.getenv('BITHUMB_API_SECRET_KEY', '')
     
-    Returns:
-        ccxt.bithumb: 빗썸 거래소 인스턴스
-    """
+    TELEGRAM_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '')
+    TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '')
     
-    api_key = os.getenv("BITHUMB_API_ACCESS_KEY")
-    secret = os.getenv("BITHUMB_API_SECRET_KEY")
+
+    # ---------------------------------------------------------
+    # 2. 거래 기본 설정 (Trading Parameters)
+    # ---------------------------------------------------------
+    # SYMBOL = 'XRP/KRW'          # 거래할 페어
+    TIMEFRAME = '1m'            # 캔들 타임프레임 (1m, 5m, 15m, 1h, 4h, 1d 등)
+    TRADE_AMOUNT_USDT = 100.0    # 1회 매수 시 투입할 금액 (USDT 기준)
     
-    if not api_key or not secret:
-        raise ValueError("빗썸 API 키가 설정되지 않았습니다.")
+    MIN_PRICE = 1000
+    MAX_PRICE = 1000000
+    EVAL_HOURS = 2
     
-    # ccxt 빗썸 클라이언트 생성
-    exchange = ccxt.bithumb({
-        'apiKey': api_key,
-        'secret': secret,
-        'enableRateLimit': True  # API 호출 간격 제한 활성화
-    })
+    # ---------------------------------------------------------
+    # 3. 봇 운영 설정 (Bot Operation Mode)
+    # ---------------------------------------------------------
+    DRY_RUN = True               # True: 페이퍼 트레이딩(가상 매매), False: 실전 매매
+    CHECK_INTERVAL = 60          # 메인 루프 대기 시간 (초) - 1분마다 상태 확인
+    MAX_RETRIES = 3              # API 호출 실패 시 최대 재시도 횟수
 
-    return exchange
-
-if __name__ == "__main__":
-    # 테스트: 빗썸 클라이언트 생성 및 잔액 조회
-    print("Bithumb API connection test...")
-        
-    try:
-        client = get_bithumb_client()
-        print("API client created successfully.")
-        
-        asset = "XRP"
-        ticker = client.fetch_ticker(f'{asset}/KRW')
-        current_price = ticker['last']
-        
-        print(f"Current {asset}/KRW price: {current_price:,.0f} KRW")
-        print(f"MOCK Trading Mode: {'Enabled' if IS_MOCK_TRADING else 'Disabled'}")
-        print(f"MOCK Balance: {MOCK_BALANCE:,.0f} KRW")
-        
-        # balance = client.fetch_balance()
-        # print("REAL Balance:", balance)
-    except Exception as e:
-        print("API 연결 실패:", str(e))
-
+    # ---------------------------------------------------------
+    # 4. 전략 세부 설정 (Strategy Parameters)
+    # ---------------------------------------------------------
+    # strategy.py 내부의 값을 밖으로 빼서 여기서 한 번에 관리할 수도 있습니다.
+    EMA_SHORT = 20
+    EMA_LONG = 50
+    RSI_PERIOD = 14
+    ADX_PERIOD = 14
